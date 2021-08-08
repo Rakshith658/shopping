@@ -1,23 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import {createStore,combineReducers} from 'redux';
-import {Provider} from 'react-redux'
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
 
-import ProductReducer from './store/Reducers/Products'
+import ProductReducer from "./store/Reducers/Products";
 
-import ShopNavigation from './navigation/ShopNavigation';
+import ShopNavigation from "./navigation/ShopNavigation";
 
 const rootReducer = combineReducers({
-  Product:ProductReducer
-})
+  Product: ProductReducer,
+});
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer);
 
 export default function App() {
   return (
     <Provider store={store}>
-      <ShopNavigation/>
+      <ShopNavigation />
     </Provider>
   );
 }
@@ -25,8 +25,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
