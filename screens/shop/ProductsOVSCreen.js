@@ -1,16 +1,18 @@
 import React from "react";
 import { FlatList, Text, Platform } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
 import ProductItem from "../../components/shop/ProductItem";
+import * as cartAction from "../../store/action/Cart";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../../components/UI/HeaderButton";
 
 const Stack = createStackNavigator();
 
 const ProductsOVStackScreen = ({ navigation }) => {
-  const onAddToCart = () => {
-    navigation.navigate("Cart");
-  };
+  const dispatch = useDispatch();
+
   const ProductsOVScreen = () => {
     const Product = useSelector((state) => state.Product.availableProducts);
     return (
@@ -25,7 +27,9 @@ const ProductsOVStackScreen = ({ navigation }) => {
             onViewDetail={() => {
               navigation.navigate("Details", { productId: itemData.item.id });
             }}
-            onAddToCart={onAddToCart}
+            onAddToCart={() => {
+              dispatch(cartAction.add_to_cart(itemData.item));
+            }}
           />
         )}
       />
@@ -43,6 +47,15 @@ const ProductsOVStackScreen = ({ navigation }) => {
             backgroundColor: Platform.OS == "android" ? Colors.primary : "",
           },
           headerTintColor: Platform.OS == "android" ? "white" : Colors.primary,
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+              <Item
+                title="Cart"
+                iconName="ios-cart"
+                onPress={() => navigation.navigate("Cart")}
+              />
+            </HeaderButtons>
+          ),
         }}
       />
     </Stack.Navigator>
