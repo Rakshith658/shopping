@@ -56,6 +56,15 @@ const ProductsOVStackScreen = ({ navigation }) => {
               />
             </HeaderButtons>
           ),
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+              <Item
+                title="Menu"
+                iconName="ios-menu"
+                onPress={() => navigation.toggleDrawer()}
+              />
+            </HeaderButtons>
+          ),
         }}
       />
     </Stack.Navigator>

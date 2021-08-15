@@ -5,23 +5,25 @@ import { Provider } from "react-redux";
 
 import ProductReducer from "./store/Reducers/Products";
 import CartReducer from "./store/Reducers/Cart";
+import OrderReducers from "./store/Reducers/Orders";
 // import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 
-import ShopNavigation from "./navigation/ShopNavigation";
+// import ShopNavigation from "./navigation/ShopNavigation";
+import ShopDraw from "./navigation/ShopDraw";
 
 const rootReducer = combineReducers({
   Product: ProductReducer,
   Cart: CartReducer,
+  Order: OrderReducers,
 });
 
 const store = createStore(rootReducer);
-const fetchFont = () => {
-  return Font.loadAsync({
-    Bold: require("./assets/fonts/OpenSans-Regular.ttf"),
-    Regular: require("./assets/fonts/OpenSans-Bold.ttf"),
+const fetchFonts = () =>
+  font.loadAsync({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
-};
 
 export default function App() {
   // const [fontloaed, setfontloaed] = useState(false);
@@ -32,7 +34,7 @@ export default function App() {
   // }
   return (
     <Provider store={store}>
-      <ShopNavigation />
+      <ShopDraw />
     </Provider>
   );
 }

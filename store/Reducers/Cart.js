@@ -1,5 +1,5 @@
 import Cart_item from "../../models/cart-items";
-import { ADD_TO_CART, REMOVE_FROM_CART } from "../action/Cart";
+import { ADD_TO_CART, CLEAN_CART, REMOVE_FROM_CART } from "../action/Cart";
 
 const initialState = {
   items: {},
@@ -71,6 +71,11 @@ const Cart = (state = initialState, action) => {
           totalAmount: state.totalAmount - state.items[action.Pid].productPrice,
         };
       }
+    case CLEAN_CART:
+      return {
+        items: {},
+        totalAmount: 0,
+      };
     default:
       return state;
   }

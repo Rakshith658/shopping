@@ -4,11 +4,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../../components/shop/CartItem";
-import { remove_from_cart } from "../../store/action/Cart";
+import { Clean_cart, remove_from_cart } from "../../store/action/Cart";
+import { add_order } from "../../store/action/Orders";
 
 const Stack = createStackNavigator();
 
-const CartStackScreen = () => {
+const CartStackScreen = ({ navigation }) => {
   const cartTotalAmount = useSelector((state) => state.Cart.totalAmount);
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -36,6 +37,11 @@ const CartStackScreen = () => {
             color={Colors.accent}
             title="Order Now"
             disabled={cartItems.length === 0}
+            onPress={() => {
+              dispatch(add_order(cartItems, cartTotalAmount));
+              dispatch(Clean_cart());
+              navigation.navigate("Order");
+            }}
           />
         </View>
         <FlatList
@@ -44,6 +50,7 @@ const CartStackScreen = () => {
           renderItem={(itemdata) => (
             <CartItem
               item={itemdata.item}
+              deleteable
               onRemove={() => {
                 dispatch(remove_from_cart(itemdata.item.productId));
               }}
