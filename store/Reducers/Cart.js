@@ -1,5 +1,6 @@
 import Cart_item from "../../models/cart-items";
 import { ADD_TO_CART, CLEAN_CART, REMOVE_FROM_CART } from "../action/Cart";
+import { REMOVE_USER_ITEM } from "../action/Products";
 
 const initialState = {
   items: {},
@@ -75,6 +76,18 @@ const Cart = (state = initialState, action) => {
       return {
         items: {},
         totalAmount: 0,
+      };
+    case REMOVE_USER_ITEM:
+      if (!state.items[action.productid]) {
+        return state;
+      }
+      const updatedItems = { ...state.items };
+      const itemTotal = state.items[action.productid].sum;
+      delete updatedItems[action.productid];
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
       };
     default:
       return state;

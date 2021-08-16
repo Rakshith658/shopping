@@ -12,7 +12,7 @@ import OrdersStackScreen from "../screens/shop/OrdersScreen";
 import ProductsOVStackScreen from "../screens/shop/ProductsOVSCreen";
 import ProductsDetailstackScreen from "../screens/shop/ProductsDetailsScreen";
 import CartStackScreen from "../screens/shop/CartScreen";
-import ShopNavigation from "./ShopNavigation";
+import { ShopNavigation, UserNavigation } from "./ShopNavigation";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import UserProductsStackScreen from "../screens/user/UserProductsScreen";
@@ -28,10 +28,7 @@ const ShopDraw = () => {
       >
         <Drawer.Screen name="App" component={ShopNavigation} />
         <Drawer.Screen name="Order" component={OrdersStackScreen} />
-        <Drawer.Screen
-          name="UserProducts"
-          component={UserProductsStackScreen}
-        />
+        <Drawer.Screen name="UserProducts" component={UserNavigation} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
