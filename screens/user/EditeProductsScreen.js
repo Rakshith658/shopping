@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
-import ProductItem from "../../components/shop/ProductItem";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
@@ -26,16 +18,30 @@ const EditeProductsStackScreen = ({ navigation, route }) => {
   const [Title, setTitle] = useState(useris ? useris.title : "");
   const [ImageUrl, setImageUrl] = useState(useris ? useris.imageUrl : "");
   const [Price, setPrice] = useState(useris ? useris.price : "");
+  const [IsvailedState, setIsvailedState] = useState(false);
   const [Description, setDescription] = useState(
     useris ? useris.description : ""
   );
 
   const HandeleSubmitte = () => {
+    if (!IsvailedState) {
+      return;
+    }
     if (useris) {
       dispatch(update_item(userId, Title, Description, ImageUrl));
     } else {
       dispatch(create_item(Title, Description, ImageUrl, +Price));
     }
+    navigation.goBack();
+  };
+
+  const TitleChangeHander = (text) => {
+    if (text.trim().length === 0) {
+      setIsvailedState(false);
+    } else {
+      setIsvailedState(true);
+    }
+    setTitle(text);
   };
 
   const EditeProductsScreen = () => {
@@ -47,8 +53,11 @@ const EditeProductsStackScreen = ({ navigation, route }) => {
             <TextInput
               style={styles.input}
               value={Title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={TitleChangeHander}
+              keyboardType="default"
+              autoCorrect
             />
+            {!IsvailedState && <Text>Please enter vailed title!</Text>}
           </View>
           <View style={styles.formcontrole}>
             <Text style={styles.title}>ImageUrl</Text>
@@ -56,6 +65,7 @@ const EditeProductsStackScreen = ({ navigation, route }) => {
               style={styles.input}
               value={ImageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
+              keyboardType="numeric"
             />
           </View>
           {useris?.price ? (

@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, Alert } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
 import ProductItem from "../../components/shop/ProductItem";
@@ -13,6 +13,22 @@ const Stack = createStackNavigator();
 const UserProductsStackScreen = ({ navigation }) => {
   const userProducts = useSelector((state) => state.Product.userProducts);
   const dispatch = useDispatch();
+  const deleteHandler = (id) => {
+    Alert.alert(
+      "Are You sure ?",
+      "do you really want to delete this item....?",
+      [
+        { text: "No", style: "default" },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: () => {
+            dispatch(remove_user_item(id));
+          },
+        },
+      ]
+    );
+  };
   const UserProductsScreen = () => {
     return (
       <FlatList
@@ -28,9 +44,7 @@ const UserProductsStackScreen = ({ navigation }) => {
                 productId: itemData.item.id,
               })
             }
-            onAddToCart={() => {
-              dispatch(remove_user_item(itemData.item.id));
-            }}
+            onAddToCart={deleteHandler.bind(this, itemData.item.id)}
             user
           />
         )}
