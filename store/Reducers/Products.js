@@ -24,8 +24,8 @@ const Reducers = (state = initialState, action) => {
         new Date().toString(),
         "u1",
         action.ProductData.title,
-        action.ProductData.description,
         action.ProductData.imageUrl,
+        action.ProductData.description,
         action.ProductData.price
       );
       return {
@@ -41,16 +41,16 @@ const Reducers = (state = initialState, action) => {
         action.pid,
         state.userProducts[productindex].ownerId,
         action.ProductData.title,
-        action.ProductData.description,
         action.ProductData.imageUrl,
+        action.ProductData.description,
         state.userProducts[productindex].price
       );
       const updatedUserProduct = [...state.userProducts];
       updatedUserProduct[productindex] = updatedproduct;
-      const availableProducts = state.availableProducts.find(
+      const availableProducts = state.availableProducts.findIndex(
         (p) => p.id === action.pid
       );
-      const updatedavailableproducts = [...state.userProducts];
+      const updatedavailableproducts = [...state.availableProducts];
       updatedavailableproducts[availableProducts] = updatedproduct;
       return {
         ...state,
