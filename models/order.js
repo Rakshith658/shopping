@@ -5,14 +5,14 @@ class Order {
     this.totalAmount = totalAmount;
     this.data = data;
   }
-  get readabledate(){
-    return this.data.toLocaleDateString('en-EN',{
-      year:"numeric",
-      month:'long',
-      day:'numeric',
-      hour:"2-digit",
-      minute:"2-digit"
-    })
+  get readabledate() {
+    return this.data.toLocaleDateString("en-EN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 }
 

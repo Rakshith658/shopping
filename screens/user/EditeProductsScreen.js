@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import {
   Button,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   View,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
@@ -42,6 +43,8 @@ const formReducer = (state, action) => {
 
 const EditeProductsStackScreen = ({ navigation, route }) => {
   const EditeProductsScreen = () => {
+    const [isloading, setIsloading] = useState(false);
+    const [Error, setError] = useState();
     const userId = route.params?.productId;
     const userProducts = useSelector((state) => state.Product.userProducts);
     const dispatch = useDispatch();
@@ -63,33 +66,46 @@ const EditeProductsStackScreen = ({ navigation, route }) => {
       formIsValid: editedProduct ? true : false,
     });
 
-    const HandeleSubmitte = () => {
+    useEffect(() => {
+      if (Error) {
+        Alert.alert("something went wrong!", Error, [{ text: "Okay" }]);
+      }
+    }, [Error]);
+
+    const HandeleSubmitte = async () => {
       if (!formState.formIsValid) {
         Alert.alert("Wrong input!", "Please check the errors in the form.", [
           { text: "Okay" },
         ]);
         return;
       }
-      if (editedProduct) {
-        dispatch(
-          update_item(
-            userId,
-            formState.inputValues.title,
-            formState.inputValues.description,
-            formState.inputValues.imageUrl
-          )
-        );
-      } else {
-        dispatch(
-          create_item(
-            formState.inputValues.title,
-            formState.inputValues.description,
-            formState.inputValues.imageUrl,
-            +formState.inputValues.price
-          )
-        );
+      setError(null);
+      setIsloading(true);
+      try {
+        if (editedProduct) {
+          await dispatch(
+            update_item(
+              userId,
+              formState.inputValues.title,
+              formState.inputValues.description,
+              formState.inputValues.imageUrl
+            )
+          );
+        } else {
+          await dispatch(
+            create_item(
+              formState.inputValues.title,
+              formState.inputValues.description,
+              formState.inputValues.imageUrl,
+              +formState.inputValues.price
+            )
+          );
+        }
+        navigation.goBack();
+      } catch (error) {
+        setError(error.message);
       }
-      navigation.goBack();
+      setIsloading(false);
     };
 
     const InputChangeHandler = useCallback(
@@ -103,6 +119,14 @@ const EditeProductsStackScreen = ({ navigation, route }) => {
       },
       [dispatchFormState]
     );
+
+    if (isloading) {
+      return (
+        <View style={styles.containerCenter}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      );
+    }
     return (
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -218,5 +242,10 @@ const styles = StyleSheet.create({
     width: "50%",
     alignSelf: "center",
     justifyContent: "center",
+  },
+  containerCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

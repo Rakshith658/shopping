@@ -1,5 +1,12 @@
-import React from "react";
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../../constant/Colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,22 +17,30 @@ import { add_order } from "../../store/action/Orders";
 const Stack = createStackNavigator();
 
 const CartStackScreen = ({ navigation }) => {
-  const cartTotalAmount = useSelector((state) => state.Cart.totalAmount);
-  const cartItems = useSelector((state) => {
-    const transformedCartItems = [];
-    for (const key in state.Cart.items) {
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.Cart.items[key].productTitle,
-        productPrice: state.Cart.items[key].productPrice,
-        quantity: state.Cart.items[key].quantity,
-        sum: state.Cart.items[key].sum,
-      });
-    }
-    return transformedCartItems;
-  });
-  const dispatch = useDispatch();
   const CartScreen = () => {
+    const [isloading, setIsloading] = useState(false);
+    const cartTotalAmount = useSelector((state) => state.Cart.totalAmount);
+    const cartItems = useSelector((state) => {
+      const transformedCartItems = [];
+      for (const key in state.Cart.items) {
+        transformedCartItems.push({
+          productId: key,
+          productTitle: state.Cart.items[key].productTitle,
+          productPrice: state.Cart.items[key].productPrice,
+          quantity: state.Cart.items[key].quantity,
+          sum: state.Cart.items[key].sum,
+        });
+      }
+      return transformedCartItems;
+    });
+    const dispatch = useDispatch();
+
+    const sendOrderHandler = async () => {
+      setIsloading(true);
+      await dispatch(add_order(cartItems, cartTotalAmount));
+      dispatch(Clean_cart());
+      setIsloading(false);
+    };
     return (
       <View style={styles.container}>
         <View style={styles.summery}>
@@ -33,16 +48,17 @@ const CartStackScreen = ({ navigation }) => {
             Total:
             <Text style={styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
           </Text>
-          <Button
-            color={Colors.accent}
-            title="Order Now"
-            disabled={cartItems.length === 0}
-            onPress={() => {
-              dispatch(add_order(cartItems, cartTotalAmount));
-              dispatch(Clean_cart());
-              navigation.navigate("Order");
-            }}
-          />
+
+          {isloading ? (
+            <ActivityIndicator size="large" color={Colors.primary} />
+          ) : (
+            <Button
+              color={Colors.accent}
+              title="Order Now"
+              disabled={cartItems.length === 0}
+              onPress={sendOrderHandler}
+            />
+          )}
         </View>
         <FlatList
           data={cartItems}
@@ -101,5 +117,10 @@ const styles = StyleSheet.create({
   },
   amount: {
     color: Colors.primary,
+  },
+  containerCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
