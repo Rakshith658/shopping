@@ -8,6 +8,7 @@ import CartStackScreen from "../screens/shop/CartScreen";
 import ProductsOVStackScreen from "../screens/shop/ProductsOVSCreen";
 import EditeProductsStackScreen from "../screens/user/EditeProductsScreen";
 import UserProductsStackScreen from "../screens/user/UserProductsScreen";
+import AuthScreen from "../screens/user/AuthScreen";
 // import OrdersStackScreen from "../screens/shop/OrdersScreen";
 // import DrawerContent from "./ShopDraw";
 
@@ -16,6 +17,7 @@ const Stack = createStackNavigator();
 function ShopNavigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Home" component={ProductsOVStackScreen} />
       <Stack.Screen name="Details" component={ProductsDetailstackScreen} />
       <Stack.Screen name="Cart" component={CartStackScreen} />
