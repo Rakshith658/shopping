@@ -13,10 +13,18 @@ import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../../components/shop/CartItem";
 import { Clean_cart, remove_from_cart } from "../../store/action/Cart";
 import { add_order } from "../../store/action/Orders";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../../components/UI/HeaderButton";
+import { logout } from "../../store/action/Auth";
 
 const Stack = createStackNavigator();
 
 const CartStackScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const Logout = () => {
+    dispatch(logout);
+    navigation.replace("Auth");
+  };
   const CartScreen = () => {
     const [isloading, setIsloading] = useState(false);
     const cartTotalAmount = useSelector((state) => state.Cart.totalAmount);
@@ -33,7 +41,6 @@ const CartStackScreen = ({ navigation }) => {
       }
       return transformedCartItems;
     });
-    const dispatch = useDispatch();
 
     const sendOrderHandler = async () => {
       setIsloading(true);
@@ -41,6 +48,7 @@ const CartStackScreen = ({ navigation }) => {
       dispatch(Clean_cart());
       setIsloading(false);
     };
+
     return (
       <View style={styles.container}>
         <View style={styles.summery}>
@@ -88,6 +96,11 @@ const CartStackScreen = ({ navigation }) => {
             backgroundColor: Colors.primary,
           },
           headerTintColor: "white",
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+              <Item title="Menu" iconName="stop-circle" onPress={Logout} />
+            </HeaderButtons>
+          ),
         }}
       />
     </Stack.Navigator>

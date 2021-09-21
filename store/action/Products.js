@@ -6,7 +6,8 @@ export const UPDATE_ITEM = "UPDATE_ITEM";
 export const SET_PRODUCT = "SET_PRODUCT";
 
 export const fetchProduct = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
     try {
       const response = await fetch(
         "https://shopping-b3df4-default-rtdb.firebaseio.com/products.json"
@@ -22,7 +23,7 @@ export const fetchProduct = () => {
         loadedProducts.push(
           new Product(
             key,
-            "u1",
+            responseData[key].ownerId,
             responseData[key].title,
             responseData[key].imageUrl,
             responseData[key].description,
@@ -30,7 +31,11 @@ export const fetchProduct = () => {
           )
         );
       }
-      dispatch({ type: SET_PRODUCT, product: loadedProducts });
+      dispatch({
+        type: SET_PRODUCT,
+        product: loadedProducts,
+        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
+      });
     } catch (error) {
       // custom analytict server
       throw error;
@@ -39,9 +44,10 @@ export const fetchProduct = () => {
 };
 
 export const remove_user_item = (productid) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     const response = await fetch(
-      `https://shopping-b3df4-default-rtdb.firebaseio.com/products/${productid}.json`,
+      `https://shopping-b3df4-default-rtdb.firebaseio.com/products/${productid}.json?auth=${token}`,
       {
         method: "DELETE",
       }
@@ -58,13 +64,21 @@ export const remove_user_item = (productid) => {
 };
 
 export const create_item = (title, description, imageUrl, price) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    const userId = getState().auth.userId;
     const response = await fetch(
-      "https://shopping-b3df4-default-rtdb.firebaseio.com/products.json",
+      `https://shopping-b3df4-default-rtdb.firebaseio.com/products.json?auth=${token}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, imageUrl, price }),
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl,
+          price,
+          ownerId: userId,
+        }),
       }
     );
 
@@ -77,16 +91,18 @@ export const create_item = (title, description, imageUrl, price) => {
         description,
         imageUrl,
         price,
+        ownerId: userId,
       },
     });
   };
 };
 
 export const update_item = (id, title, description, imageUrl) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     try {
       const response = await fetch(
-        `https://shopping-b3df4-default-rtdb.firebaseio.com/products/${id}.json`,
+        `https://shopping-b3df4-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

@@ -27,7 +27,7 @@ const Reducers = (state = initialState, action) => {
     case CREATE_ITEM:
       const newproduct = new Product(
         action.ProductData.id,
-        "u1",
+        action.ProductData.ownerId,
         action.ProductData.title,
         action.ProductData.imageUrl,
         action.ProductData.description,
@@ -66,7 +66,7 @@ const Reducers = (state = initialState, action) => {
       return {
         ...state,
         availableProducts: action.product,
-        userProducts: action.product.filter((prod) => prod.ownerId === "u1"),
+        userProducts: action.userProducts,
       };
     default:
       return state;

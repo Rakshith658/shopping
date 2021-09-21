@@ -6,6 +6,8 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Button,
+  ActivityIndicator,
+  Text,
 } from "react-native";
 import Inpute from "../../components/UI/Inpute";
 import { LinearGradient } from "expo-linear-gradient";
@@ -40,9 +42,11 @@ const formReducer = (state, action) => {
   return state;
 };
 
-const AuthScreen = () => {
+const AuthScreen = ({ navigation }) => {
   const AuthScreensub = () => {
+    const [isloading, setIsloading] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
+    const [iserror, setiserror] = useState(false);
     const [formState, dispatchFormState] = useReducer(formReducer, {
       inputValues: {
         email: "",
@@ -56,15 +60,22 @@ const AuthScreen = () => {
     });
     const dispatch = useDispatch();
 
-    const AuthHandler = () => {
-      if (isSignup) {
-        dispatch(
-          signup(formState.inputValues.email, formState.inputValues.password)
-        );
-      } else {
-        dispatch(
-          signin(formState.inputValues.email, formState.inputValues.password)
-        );
+    const AuthHandler = async () => {
+      setIsloading(true);
+      try {
+        if (isSignup) {
+          await dispatch(
+            signup(formState.inputValues.email, formState.inputValues.password)
+          );
+        } else {
+          await dispatch(
+            signin(formState.inputValues.email, formState.inputValues.password)
+          );
+        }
+        navigation.replace("Home");
+      } catch (error) {
+        setiserror(true);
+        setIsloading(false);
       }
     };
     const InputChangeHandler = useCallback(
@@ -78,6 +89,19 @@ const AuthScreen = () => {
       },
       [dispatchFormState]
     );
+
+    if (iserror) {
+      return (
+        <View style={styles.container}>
+          <Text style={{ marginBottom: 10 }}>the error occurred !</Text>
+          <Button
+            title="Try Again !"
+            onPress={() => setiserror(false)}
+            color={Colors.primary}
+          />
+        </View>
+      );
+    }
     return (
       <KeyboardAvoidingView keyboardVerticalOffset={50} style={styles.screen}>
         <LinearGradient colors={["#ffedff", "#ffe3ff"]} style={styles.gradient}>
@@ -107,18 +131,30 @@ const AuthScreen = () => {
                 initialValue=""
               />
               <View style={styles.buttonContainer}>
-                <Button
-                  title={isSignup ? "Sign Up" : "Login"}
-                  color={Colors.primary}
-                  onPress={AuthHandler}
-                />
+                {isloading ? (
+                  <View style={styles.container}>
+                    <ActivityIndicator size="small" color={Colors.primary} />
+                  </View>
+                ) : (
+                  <Button
+                    title={isSignup ? "Sign Up" : "Login"}
+                    color={Colors.primary}
+                    onPress={AuthHandler}
+                  />
+                )}
               </View>
               <View style={styles.buttonContainer}>
-                <Button
-                  title={`Switch to ${isSignup ? "Login" : "Sign Up"}`}
-                  color={Colors.accent}
-                  onPress={() => setIsSignup(!isSignup)}
-                />
+                {isloading ? (
+                  <View style={styles.container}>
+                    <ActivityIndicator size="small" color={Colors.primary} />
+                  </View>
+                ) : (
+                  <Button
+                    title={`Switch to ${isSignup ? "Login" : "Sign Up"}`}
+                    color={Colors.accent}
+                    onPress={() => setIsSignup(!isSignup)}
+                  />
+                )}
               </View>
             </ScrollView>
           </View>
@@ -162,5 +198,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

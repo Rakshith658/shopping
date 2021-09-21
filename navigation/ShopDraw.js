@@ -8,14 +8,8 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import OrdersStackScreen from "../screens/shop/OrdersScreen";
-// import ShopNavigation from "./ShopNavigation";
-import ProductsOVStackScreen from "../screens/shop/ProductsOVSCreen";
-import ProductsDetailstackScreen from "../screens/shop/ProductsDetailsScreen";
-import CartStackScreen from "../screens/shop/CartScreen";
 import { ShopNavigation, UserNavigation } from "./ShopNavigation";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import UserProductsStackScreen from "../screens/user/UserProductsScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();

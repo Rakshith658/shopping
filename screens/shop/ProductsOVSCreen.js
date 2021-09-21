@@ -101,7 +101,7 @@ const ProductsOVStackScreen = ({ navigation }) => {
         name="ProductsOVScreen"
         component={ProductsOVScreen}
         options={{
-          headerTitle: "All Products",
+          headerTitle: "Chaitra Provision Store",
           headerStyle: {
             backgroundColor: Platform.OS == "android" ? Colors.primary : "",
           },

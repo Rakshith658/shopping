@@ -4,10 +4,11 @@ export const ADD_ORDER = "ADD_ORDER";
 export const SET_ORDER = "SET_ORDER";
 
 export const fetch_Order = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
     try {
       const response = await fetch(
-        "https://shopping-b3df4-default-rtdb.firebaseio.com/order/u1.json"
+        `https://shopping-b3df4-default-rtdb.firebaseio.com/order/${userId}.json`
       );
 
       if (!response.ok) {
@@ -35,10 +36,12 @@ export const fetch_Order = () => {
 };
 
 export const add_order = (carttems, totalAmount) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    const userId = getState().auth.userId;
     const date = new Date();
     const response = await fetch(
-      "https://shopping-b3df4-default-rtdb.firebaseio.com/order/u1.json",
+      `https://shopping-b3df4-default-rtdb.firebaseio.com/order/${userId}.json?auth=${token}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
